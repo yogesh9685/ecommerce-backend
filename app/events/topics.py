@@ -1,0 +1,5 @@
+ORDER_EVENTS = "order-events"
+PAYMENT_EVENTS = "payment-events"
+NOTIFICATION_EVENTS = "notification-events"
+INVENTORY_EVENTS = "inventory-events"
+USER_EVENTS = "user-events"

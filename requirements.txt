@@ -1,0 +1,51 @@
+# FastAPI & core
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+pydantic[email]
+
+# Database
+sqlalchemy
+asyncpg
+alembic
+aiosqlite
+
+# Auth & Security
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Redis
+redis
+
+# Elasticsearch
+elasticsearch
+
+# Kafka
+aiokafka
+
+# AWS S3
+boto3
+
+# Celery
+celery
+
+# Payment Gateway
+razorpay
+
+# Email
+# uses stdlib smtplib
+
+# HTTP client (for tests)
+httpx
+
+# Testing
+pytest
+pytest-asyncio
+
+# Image processing (for tasks)
+Pillow
+
+# Utilities
+python-multipart
+
