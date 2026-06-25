@@ -1,21 +1,25 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
+
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.api.router import api_router
 from app.config import settings
 from app.core.middleware import RequestLoggingMiddleware
+from app.core.rate_limiter import limiter
 from app.database.connection import engine
 from app.database.base import Base
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
-    # Shutdown
     await engine.dispose()
 
 
@@ -27,6 +31,16 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Rate Limiter
+app.state.limiter = limiter
+
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler
+)
+
+app.add_middleware(SlowAPIMiddleware)
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -36,13 +50,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Custom middleware
+# Logging Middleware
 app.add_middleware(RequestLoggingMiddleware)
 
 # Routers
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
-@app.get("/health", tags=["Health"])
-async def health_check():
-    return {"status": "ok", "version": settings.VERSION}
+@app.get("/health")
+async def health():
+    return {
+        "status": "ok"
+    }

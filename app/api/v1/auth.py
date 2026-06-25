@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from fastapi import Request
 from app.database.session import get_db
 from app.schemas.auth import (
     RegisterRequest, LoginRequest, RefreshTokenRequest,
@@ -11,30 +11,11 @@ from app.services.otp_service import OTPService
 from app.models.otp import OTPPurpose
 from app.repositories.user_repository import UserRepository
 from app.core.security import hash_password
-from slowapi import Limiter
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
-from slowapi.exception_handlers import (
-    _rate_limit_exceeded_handler
-)
-
-app = FastAPI()
-
-limiter = Limiter(
-    key_func=get_remote_address
-)
-
-app.state.limiter = limiter
-
-app.add_exception_handler(
-    RateLimitExceeded,
-    _rate_limit_exceeded_handler
-)
-
-app.add_middleware(SlowAPIMiddleware)
-
+from app.core.rate_limiter import limiter
 router = APIRouter(prefix="/auth", tags=["Auth"])
+
+
+
 
 
 @router.post("/register", status_code=201)
@@ -45,7 +26,7 @@ async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
 
 @limiter.limit("5/minute")
 @router.post("/login", response_model=TokenResponse)
-async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(request: Request, data: LoginRequest, db: AsyncSession = Depends(get_db)):
     service = AuthService(db)
     return await service.login(data)
 

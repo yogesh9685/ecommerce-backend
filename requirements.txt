@@ -4,6 +4,7 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 pydantic[email]
+slowapi
 
 # Database
 sqlalchemy
@@ -49,3 +50,13 @@ Pillow
 # Utilities
 python-multipart
 
+# ci 
+
+
+pytest-cov
+black
+flake8
+mypy
+bandit
+types-requests
+python-dotenv
