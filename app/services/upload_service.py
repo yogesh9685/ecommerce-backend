@@ -22,7 +22,7 @@ class UploadService:
         if file.content_type not in ["image/jpeg", "image/png", "image/webp"]:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Only JPEG, PNG, WebP images are allowed"
+                detail="Only JPEG, PNG, WebP images are allowed",
             )
         ext = file.filename.split(".")[-1]
         key = f"{folder}/{uuid.uuid4().hex}.{ext}"
@@ -39,7 +39,10 @@ class UploadService:
             return url
         except ClientError as e:
             logger.error(f"S3 upload failed: {e}")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="File upload failed")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="File upload failed",
+            )
 
     async def delete_file(self, url: str) -> None:
         key = url.split(f"{self.bucket}.s3.{settings.AWS_REGION}.amazonaws.com/")[-1]

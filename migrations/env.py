@@ -10,10 +10,25 @@ from alembic import context
 # Import all models so Alembic can detect them
 from app.database.base import Base
 from app.models import (  # noqa: F401
-    user, role, permission, address, category, brand,
-    product, product_image, product_variant, inventory,
-    cart, wishlist, coupon, order, payment, review,
-    otp, session, audit_log
+    user,
+    role,
+    permission,
+    address,
+    category,
+    brand,
+    product,
+    product_image,
+    product_variant,
+    inventory,
+    cart,
+    wishlist,
+    coupon,
+    order,
+    payment,
+    review,
+    otp,
+    session,
+    audit_log,
 )
 
 # this is the Alembic Config object, which provides

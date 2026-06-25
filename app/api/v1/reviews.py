@@ -14,7 +14,9 @@ router = APIRouter(prefix="/reviews", tags=["Reviews"])
 @router.get("/product/{product_id}", response_model=list[ReviewResponse])
 async def get_product_reviews(product_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(
-        select(Review).where(Review.product_id == product_id, Review.is_approved == True)
+        select(Review).where(
+            Review.product_id == product_id, Review.is_approved == True
+        )
     )
     return result.scalars().all()
 
@@ -43,6 +45,7 @@ async def update_review(
     review = result.scalar_one_or_none()
     if not review:
         from app.core.exceptions import NotFoundException
+
         raise NotFoundException("Review not found")
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(review, field, value)

@@ -18,10 +18,14 @@ class OrderService:
 
     async def create_order(self, user_id: int, data: OrderCreate) -> Order:
         # Fetch cart items
-        cart_result = await self.db.execute(select(CartItem).where(CartItem.user_id == user_id))
+        cart_result = await self.db.execute(
+            select(CartItem).where(CartItem.user_id == user_id)
+        )
         cart_items = cart_result.scalars().all()
         if not cart_items:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cart is empty")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Cart is empty"
+            )
 
         subtotal = sum(item.unit_price * item.quantity for item in cart_items)
         discount_amount = 0.0
@@ -30,7 +34,9 @@ class OrderService:
         coupon = None
         if data.coupon_code:
             coupon_result = await self.db.execute(
-                select(Coupon).where(Coupon.code == data.coupon_code, Coupon.is_active == True)
+                select(Coupon).where(
+                    Coupon.code == data.coupon_code, Coupon.is_active == True
+                )
             )
             coupon = coupon_result.scalar_one_or_none()
             if coupon:
@@ -78,7 +84,9 @@ class OrderService:
     async def get_order(self, order_id: int, user_id: int) -> Order:
         order = await self.repo.get_by_id(order_id)
         if not order or order.user_id != user_id:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"
+            )
         return order
 
     async def get_user_orders(self, user_id: int, page: int = 1, page_size: int = 20):
@@ -87,6 +95,9 @@ class OrderService:
     async def cancel_order(self, order_id: int, user_id: int) -> Order:
         order = await self.get_order(order_id, user_id)
         if order.status not in [OrderStatus.PENDING, OrderStatus.CONFIRMED]:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order cannot be cancelled")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Order cannot be cancelled",
+            )
         order.status = OrderStatus.CANCELLED
         return order

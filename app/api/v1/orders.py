@@ -10,7 +10,7 @@ from app.services.order_service import OrderService
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
-@router.post("/", status_code=201) # response_model=OrderResponse
+@router.post("/", status_code=201)  # response_model=OrderResponse
 async def place_order(
     data: OrderCreate,
     current_user: User = Depends(get_current_user),

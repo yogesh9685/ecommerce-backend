@@ -30,12 +30,14 @@ class ProductService:
     async def get_product(self, product_id: int) -> Product:
         product = await self.repo.get_by_id_with_relations(product_id)
         if not product:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+            )
         return product
 
     async def get_product_by_slug(self, slug: str) -> Product:
         product = await self.repo.get_by_slug(slug)
-      
+
         return product
 
     async def list_products(
@@ -61,7 +63,9 @@ class ProductService:
     async def update_product(self, product_id: int, data: ProductUpdate) -> Product:
         product = await self.repo.get_by_id(product_id)
         if not product:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+            )
         for field, value in data.model_dump(exclude_none=True).items():
             setattr(product, field, value)
         return product
@@ -69,5 +73,7 @@ class ProductService:
     async def delete_product(self, product_id: int) -> None:
         product = await self.repo.get_by_id(product_id)
         if not product:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+            )
         await self.db.delete(product)

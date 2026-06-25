@@ -6,8 +6,11 @@ from datetime import timedelta
 from app.models.user import User
 from app.models.session import Session
 from app.core.security import (
-    hash_password, verify_password,
-    create_access_token, create_refresh_token, decode_refresh_token
+    hash_password,
+    verify_password,
+    create_access_token,
+    create_refresh_token,
+    decode_refresh_token,
 )
 from app.repositories.user_repository import UserRepository
 from app.services.otp_service import OTPService
@@ -25,7 +28,9 @@ class AuthService:
     async def register(self, data: RegisterRequest) -> User:
         existing = await self.user_repo.get_by_email(data.email)
         if existing:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT, detail="Email already registered"
+            )
         user = User(
             email=data.email,
             full_name=data.full_name,
@@ -40,13 +45,19 @@ class AuthService:
     async def login(self, data: LoginRequest) -> TokenResponse:
         user = await self.user_repo.get_by_email(data.email)
         if not user:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email"
+            )
 
         if not verify_password(data.password, user.hashed_password):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
+            )
 
         if not user.is_active:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is inactive")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Account is inactive"
+            )
 
         access_token = create_access_token({"sub": str(user.id)})
         refresh_token = create_refresh_token({"sub": str(user.id)})
@@ -54,7 +65,8 @@ class AuthService:
         session = Session(
             user_id=user.id,
             refresh_token=refresh_token,
-            expires_at=datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+            expires_at=datetime.utcnow()
+            + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
         )
         self.db.add(session)
         return TokenResponse(access_token=access_token, refresh_token=refresh_token)
@@ -62,13 +74,19 @@ class AuthService:
     async def refresh_tokens(self, refresh_token: str) -> TokenResponse:
         payload = decode_refresh_token(refresh_token)
         if not payload:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
+            )
         result = await self.db.execute(
-            select(Session).where(Session.refresh_token == refresh_token, Session.is_active == True)
+            select(Session).where(
+                Session.refresh_token == refresh_token, Session.is_active == True
+            )
         )
         session = result.scalar_one_or_none()
         if not session:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session expired")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Session expired"
+            )
 
         session.is_active = False
         new_access = create_access_token({"sub": payload["sub"]})
@@ -76,7 +94,8 @@ class AuthService:
         new_session = Session(
             user_id=session.user_id,
             refresh_token=new_refresh,
-            expires_at=datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+            expires_at=datetime.utcnow()
+            + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
         )
         self.db.add(new_session)
         return TokenResponse(access_token=new_access, refresh_token=new_refresh)

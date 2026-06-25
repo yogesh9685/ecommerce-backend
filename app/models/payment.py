@@ -15,7 +15,7 @@ class Payment(Base):
     __tablename__ = "payments"
 
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False, unique=True)
-    gateway = Column(String(50), nullable=False)         # razorpay / stripe
+    gateway = Column(String(50), nullable=False)  # razorpay / stripe
     gateway_order_id = Column(String(200), nullable=True)
     gateway_payment_id = Column(String(200), nullable=True)
     gateway_signature = Column(String(500), nullable=True)

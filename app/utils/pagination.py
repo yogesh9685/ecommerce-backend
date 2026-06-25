@@ -14,6 +14,7 @@ class PaginatedResponse(BaseModel, Generic[T]):
     @classmethod
     def create(cls, items: List[T], total: int, page: int, page_size: int):
         import math
+
         return cls(
             items=items,
             total=total,

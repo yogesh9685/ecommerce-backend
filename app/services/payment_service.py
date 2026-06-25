@@ -25,13 +25,17 @@ class PaymentService:
         )
         order = result.scalar_one_or_none()
         if not order:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"
+            )
 
-        gateway_order = self.client.order.create({
-            "amount": int(order.total_amount * 100),
-            "currency": "INR",
-            "receipt": order.order_number,
-        })
+        gateway_order = self.client.order.create(
+            {
+                "amount": int(order.total_amount * 100),
+                "currency": "INR",
+                "receipt": order.order_number,
+            }
+        )
 
         payment = Payment(
             order_id=order.id,
@@ -51,12 +55,20 @@ class PaymentService:
         }
 
     async def verify_payment(
-        self, order_id: int, gateway_payment_id: str, gateway_order_id: str, gateway_signature: str
+        self,
+        order_id: int,
+        gateway_payment_id: str,
+        gateway_order_id: str,
+        gateway_signature: str,
     ) -> Payment:
-        result = await self.db.execute(select(Payment).where(Payment.order_id == order_id))
+        result = await self.db.execute(
+            select(Payment).where(Payment.order_id == order_id)
+        )
         payment = result.scalar_one_or_none()
         if not payment:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found"
+            )
 
         # Verify signature
         body = f"{gateway_order_id}|{gateway_payment_id}"
@@ -66,7 +78,10 @@ class PaymentService:
 
         if expected != gateway_signature:
             payment.status = PaymentStatus.FAILED
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Payment verification failed")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Payment verification failed",
+            )
 
         payment.gateway_payment_id = gateway_payment_id
         payment.gateway_signature = gateway_signature

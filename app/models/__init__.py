@@ -2,6 +2,7 @@
 Models package — import all models here so SQLAlchemy and Alembic
 can discover them via Base.metadata.
 """
+
 from app.models.user import User
 from app.models.role import Role
 from app.models.permission import Permission
@@ -23,9 +24,24 @@ from app.models.session import Session
 from app.models.audit_log import AuditLog
 
 __all__ = [
-    "User", "Role", "Permission", "Address",
-    "Category", "Brand", "Product", "ProductImage", "ProductVariant", "Inventory",
-    "CartItem", "WishlistItem", "Coupon",
-    "Order", "OrderItem", "Payment", "Review",
-    "OTP", "Session", "AuditLog",
+    "User",
+    "Role",
+    "Permission",
+    "Address",
+    "Category",
+    "Brand",
+    "Product",
+    "ProductImage",
+    "ProductVariant",
+    "Inventory",
+    "CartItem",
+    "WishlistItem",
+    "Coupon",
+    "Order",
+    "OrderItem",
+    "Payment",
+    "Review",
+    "OTP",
+    "Session",
+    "AuditLog",
 ]

@@ -8,7 +8,7 @@ class Review(Base):
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    rating = Column(Float, nullable=False)   # 1.0 - 5.0
+    rating = Column(Float, nullable=False)  # 1.0 - 5.0
     title = Column(String(255), nullable=True)
     body = Column(Text, nullable=True)
     is_verified_purchase = Column(Boolean, default=False)

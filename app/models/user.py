@@ -23,8 +23,14 @@ class User(Base):
     avatar_url = Column(String(512), nullable=True)
 
     roles = relationship("Role", secondary=user_roles, back_populates="users")
-    addresses = relationship("Address", back_populates="user", cascade="all, delete-orphan")
+    addresses = relationship(
+        "Address", back_populates="user", cascade="all, delete-orphan"
+    )
     orders = relationship("Order", back_populates="user")
-    cart_items = relationship("CartItem", back_populates="user", cascade="all, delete-orphan")
-    wishlist_items = relationship("WishlistItem", back_populates="user", cascade="all, delete-orphan")
+    cart_items = relationship(
+        "CartItem", back_populates="user", cascade="all, delete-orphan"
+    )
+    wishlist_items = relationship(
+        "WishlistItem", back_populates="user", cascade="all, delete-orphan"
+    )
     reviews = relationship("Review", back_populates="user")

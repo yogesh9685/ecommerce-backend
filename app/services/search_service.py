@@ -19,7 +19,7 @@ class SearchService:
                     Product.name.ilike(f"%{query}%"),
                     Product.description.ilike(f"%{query}%"),
                     Product.sku.ilike(f"%{query}%"),
-                )
+                ),
             )
             .offset(offset)
             .limit(page_size)

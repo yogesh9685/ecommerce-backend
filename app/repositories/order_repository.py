@@ -18,7 +18,9 @@ class OrderRepository:
         )
         return result.scalar_one_or_none()
 
-    async def get_user_orders(self, user_id: int, page: int = 1, page_size: int = 20) -> list[Order]:
+    async def get_user_orders(
+        self, user_id: int, page: int = 1, page_size: int = 20
+    ) -> list[Order]:
         offset = (page - 1) * page_size
         result = await self.db.execute(
             select(Order)

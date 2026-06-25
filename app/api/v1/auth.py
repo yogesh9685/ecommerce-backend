@@ -3,8 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Request
 from app.database.session import get_db
 from app.schemas.auth import (
-    RegisterRequest, LoginRequest, RefreshTokenRequest,
-    TokenResponse, OTPVerifyRequest, PasswordResetRequest, PasswordResetConfirm
+    RegisterRequest,
+    LoginRequest,
+    RefreshTokenRequest,
+    TokenResponse,
+    OTPVerifyRequest,
+    PasswordResetRequest,
+    PasswordResetConfirm,
 )
 from app.services.auth_service import AuthService
 from app.services.otp_service import OTPService
@@ -12,21 +17,25 @@ from app.models.otp import OTPPurpose
 from app.repositories.user_repository import UserRepository
 from app.core.security import hash_password
 from app.core.rate_limiter import limiter
+
 router = APIRouter(prefix="/auth", tags=["Auth"])
-
-
-
 
 
 @router.post("/register", status_code=201)
 async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
     service = AuthService(db)
     user = await service.register(data)
-    return {"message": "Registration successful. Please verify your email.", "user_id": user.id}
+    return {
+        "message": "Registration successful. Please verify your email.",
+        "user_id": user.id,
+    }
+
 
 @limiter.limit("5/minute")
 @router.post("/login", response_model=TokenResponse)
-async def login(request: Request, data: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(
+    request: Request, data: LoginRequest, db: AsyncSession = Depends(get_db)
+):
     service = AuthService(db)
     return await service.login(data)
 
@@ -55,7 +64,9 @@ async def verify_email(data: OTPVerifyRequest, db: AsyncSession = Depends(get_db
 
 
 @router.post("/forgot-password")
-async def forgot_password(data: PasswordResetRequest, db: AsyncSession = Depends(get_db)):
+async def forgot_password(
+    data: PasswordResetRequest, db: AsyncSession = Depends(get_db)
+):
     repo = UserRepository(db)
     user = await repo.get_by_email(data.email)
     if user:
@@ -65,7 +76,9 @@ async def forgot_password(data: PasswordResetRequest, db: AsyncSession = Depends
 
 
 @router.post("/reset-password")
-async def reset_password(data: PasswordResetConfirm, db: AsyncSession = Depends(get_db)):
+async def reset_password(
+    data: PasswordResetConfirm, db: AsyncSession = Depends(get_db)
+):
     repo = UserRepository(db)
     user = await repo.get_by_email(data.email)
     otp_service = OTPService(db)
@@ -80,6 +93,7 @@ async def resend_otp(data: PasswordResetRequest, db: AsyncSession = Depends(get_
     user = await repo.get_by_email(data.email)
     if not user:
         from fastapi import HTTPException
+
         raise HTTPException(status_code=404, detail="User not found")
     if user.is_verified:
         return {"message": "Email already verified"}

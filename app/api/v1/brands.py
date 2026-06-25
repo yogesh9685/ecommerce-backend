@@ -22,8 +22,10 @@ async def get_brand(brand_id: int, db: AsyncSession = Depends(get_db)):
     brand = result.scalar_one_or_none()
     if not brand:
         from app.core.exceptions import NotFoundException
+
         raise NotFoundException("Brand not found")
     return brand
+
 
 @router.post("/", status_code=201)
 async def create_brand(

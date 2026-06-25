@@ -15,7 +15,9 @@ class PaymentRepository:
         )
         return result.scalar_one_or_none()
 
-    async def get_by_gateway_payment_id(self, gateway_payment_id: str) -> Optional[Payment]:
+    async def get_by_gateway_payment_id(
+        self, gateway_payment_id: str
+    ) -> Optional[Payment]:
         result = await self.db.execute(
             select(Payment).where(Payment.gateway_payment_id == gateway_payment_id)
         )

@@ -20,7 +20,7 @@ async def list_addresses(
     return result.scalars().all()
 
 
-@router.post("/",  response_model=AddressResponse,  status_code=201)
+@router.post("/", response_model=AddressResponse, status_code=201)
 async def create_address(
     data: AddressCreate,
     current_user: User = Depends(get_current_user),
@@ -32,17 +32,17 @@ async def create_address(
             .where(Address.user_id == current_user.id)
             .values(is_default=False)
         )
-    address = Address( 
-        full_name = data.full_name,
-        phone = data.phone,
-        address_line1 = data.address_line1,
-        address_line2 = data.address_line2,
-        city = data.city,
-        state = data.state,
-        country = data.country,
-        postal_code = data.postal_code,
-        is_default = data.is_default,
-        user_id = current_user.id
+    address = Address(
+        full_name=data.full_name,
+        phone=data.phone,
+        address_line1=data.address_line1,
+        address_line2=data.address_line2,
+        city=data.city,
+        state=data.state,
+        country=data.country,
+        postal_code=data.postal_code,
+        is_default=data.is_default,
+        user_id=current_user.id,
     )
     db.add(address)
     await db.commit()
@@ -58,11 +58,14 @@ async def update_address(
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
-        select(Address).where(Address.id == address_id, Address.user_id == current_user.id)
+        select(Address).where(
+            Address.id == address_id, Address.user_id == current_user.id
+        )
     )
     address = result.scalar_one_or_none()
     if not address:
         from app.core.exceptions import NotFoundException
+
         raise NotFoundException("Address not found")
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(address, field, value)
@@ -78,7 +81,9 @@ async def delete_address(
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
-        select(Address).where(Address.id == address_id, Address.user_id == current_user.id)
+        select(Address).where(
+            Address.id == address_id, Address.user_id == current_user.id
+        )
     )
     address = result.scalar_one_or_none()
     if address:
