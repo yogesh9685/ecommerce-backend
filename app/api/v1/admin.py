@@ -23,7 +23,9 @@ async def dashboard(
     total_products = (await db.execute(select(func.count(Product.id)))).scalar()
     total_revenue = (
         await db.execute(
-            select(func.sum(Order.total_amount)).where(Order.status == OrderStatus.DELIVERED)
+            select(func.sum(Order.total_amount)).where(
+                Order.status == OrderStatus.DELIVERED
+            )
         )
     ).scalar() or 0.0
     return {
@@ -56,6 +58,7 @@ async def update_order_status(
     order = result.scalar_one_or_none()
     if not order:
         from app.core.exceptions import NotFoundException
+
         raise NotFoundException("Order not found")
     order.status = data.status
     if data.tracking_number:

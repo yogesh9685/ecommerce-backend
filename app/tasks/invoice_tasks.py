@@ -14,6 +14,7 @@ def generate_invoice_task(self, order_id: int):
     try:
         # TODO: Use reportlab or weasyprint to generate PDF
         from app.utils.logger import logger
+
         logger.info(f"Generating invoice for order {order_id}")
     except Exception as exc:
         raise self.retry(exc=exc, countdown=120)

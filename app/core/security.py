@@ -39,7 +39,9 @@ def create_refresh_token(data: dict) -> str:
 
 def decode_access_token(token: str) -> Optional[dict]:
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         if payload.get("type") != "access":
             return None
         return payload
@@ -49,7 +51,9 @@ def decode_access_token(token: str) -> Optional[dict]:
 
 def decode_refresh_token(token: str) -> Optional[dict]:
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         if payload.get("type") != "refresh":
             return None
         return payload

@@ -16,15 +16,22 @@ class CouponService:
         )
         coupon = result.scalar_one_or_none()
         if not coupon:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid coupon code")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Invalid coupon code"
+            )
         if coupon.expires_at and datetime.utcnow() > coupon.expires_at:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Coupon has expired")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Coupon has expired"
+            )
         if coupon.usage_limit and coupon.usage_count >= coupon.usage_limit:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Coupon usage limit reached")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Coupon usage limit reached",
+            )
         if order_amount < coupon.min_order_amount:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Minimum order amount ₹{coupon.min_order_amount} required"
+                detail=f"Minimum order amount ₹{coupon.min_order_amount} required",
             )
         return coupon
 

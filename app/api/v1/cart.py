@@ -19,14 +19,17 @@ async def get_cart(
     items = await service.get_cart(current_user.id)
     subtotal = sum(i.unit_price * i.quantity for i in items)
     return CartResponse(
-        items=[{
-            "id": i.id,
-            "product_id": i.product_id,
-            "variant_id": i.variant_id,
-            "quantity": i.quantity,
-            "unit_price": i.unit_price,
-            "total_price": i.unit_price * i.quantity,
-        } for i in items],
+        items=[
+            {
+                "id": i.id,
+                "product_id": i.product_id,
+                "variant_id": i.variant_id,
+                "quantity": i.quantity,
+                "unit_price": i.unit_price,
+                "total_price": i.unit_price * i.quantity,
+            }
+            for i in items
+        ],
         subtotal=subtotal,
         item_count=len(items),
     )

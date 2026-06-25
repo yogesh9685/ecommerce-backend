@@ -7,7 +7,9 @@ class PermissionChecker:
         self.required_permissions = required_permissions
 
     def __call__(self, current_user: User) -> bool:
-        user_permissions = {perm.name for role in current_user.roles for perm in role.permissions}
+        user_permissions = {
+            perm.name for role in current_user.roles for perm in role.permissions
+        }
         for perm in self.required_permissions:
             if perm not in user_permissions:
                 raise HTTPException(
@@ -26,4 +28,5 @@ def require_roles(*roles: str):
                 detail="You do not have the required role to access this resource",
             )
         return current_user
+
     return checker

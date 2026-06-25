@@ -4,7 +4,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.session import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
-from app.schemas.product import ProductCreate, ProductUpdate, ProductResponse, ProductListResponse
+from app.schemas.product import (
+    ProductCreate,
+    ProductUpdate,
+    ProductResponse,
+    ProductListResponse,
+)
 from app.services.product_service import ProductService
 from app.utils.filters import ProductFilters
 
@@ -31,9 +36,7 @@ async def list_products(
 @router.get("/{slug}")
 async def get_product(slug: str, db: AsyncSession = Depends(get_db)):
     service = ProductService(db)
-  
 
-  
     return await service.get_product_by_slug(slug)
 
 

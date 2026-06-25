@@ -13,6 +13,8 @@ class Category(Base):
     parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     is_active = Column(Boolean, default=True)
 
-    parent = relationship("Category", remote_side="Category.id", back_populates="children")
+    parent = relationship(
+        "Category", remote_side="Category.id", back_populates="children"
+    )
     children = relationship("Category", back_populates="parent")
     products = relationship("Product", back_populates="category")

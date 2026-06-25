@@ -34,7 +34,9 @@ class Order(Base):
     user = relationship("User", back_populates="orders")
     shipping_address = relationship("Address", back_populates="orders")
     coupon = relationship("Coupon", back_populates="orders")
-    items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
+    items = relationship(
+        "OrderItem", back_populates="order", cascade="all, delete-orphan"
+    )
     payment = relationship("Payment", back_populates="order", uselist=False)
 
 

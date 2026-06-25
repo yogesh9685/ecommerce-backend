@@ -15,7 +15,9 @@ async def get_wishlist(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(select(WishlistItem).where(WishlistItem.user_id == current_user.id))
+    result = await db.execute(
+        select(WishlistItem).where(WishlistItem.user_id == current_user.id)
+    )
     return result.scalars().all()
 
 

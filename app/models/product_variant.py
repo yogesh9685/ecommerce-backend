@@ -7,8 +7,8 @@ class ProductVariant(Base):
     __tablename__ = "product_variants"
 
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    name = Column(String(100), nullable=False)       # e.g. "Color", "Size"
-    value = Column(String(100), nullable=False)      # e.g. "Red", "XL"
+    name = Column(String(100), nullable=False)  # e.g. "Color", "Size"
+    value = Column(String(100), nullable=False)  # e.g. "Red", "XL"
     sku = Column(String(100), unique=True, nullable=False)
     price = Column(Float, nullable=True)
     stock = Column(Integer, default=0)

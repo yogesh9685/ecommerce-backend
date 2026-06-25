@@ -61,7 +61,7 @@ class ProductResponse(ProductBase):
     average_rating: float
     total_reviews: int
     # images:  List[ProductImageResponse] = []
-    #variants: List[ProductVariantResponse] = []
+    # variants: List[ProductVariantResponse] = []
     created_at: datetime
 
     class Config:

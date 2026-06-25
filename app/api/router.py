@@ -1,9 +1,22 @@
 from fastapi import APIRouter
 
 from app.api.v1 import (
-    auth, users, addresses, products, categories,
-    brands, search, cart, wishlist, coupons,
-    orders, payments, reviews, uploads, notifications, admin
+    auth,
+    users,
+    addresses,
+    products,
+    categories,
+    brands,
+    search,
+    cart,
+    wishlist,
+    coupons,
+    orders,
+    payments,
+    reviews,
+    uploads,
+    notifications,
+    admin,
 )
 
 api_router = APIRouter()

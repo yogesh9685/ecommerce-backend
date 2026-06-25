@@ -37,7 +37,9 @@ class EmailService:
         """
         self._send(to_email, subject, body)
 
-    def send_order_confirmation(self, to_email: str, order_number: str, total: float) -> None:
+    def send_order_confirmation(
+        self, to_email: str, order_number: str, total: float
+    ) -> None:
         subject = f"Order Confirmed - #{order_number}"
         body = f"""
         <h2>Thank you for your order!</h2>

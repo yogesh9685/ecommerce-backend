@@ -26,8 +26,12 @@ class Product(Base):
 
     category = relationship("Category", back_populates="products")
     brand = relationship("Brand", back_populates="products")
-    images = relationship("ProductImage", back_populates="product", cascade="all, delete-orphan")
-    variants = relationship("ProductVariant", back_populates="product", cascade="all, delete-orphan")
+    images = relationship(
+        "ProductImage", back_populates="product", cascade="all, delete-orphan"
+    )
+    variants = relationship(
+        "ProductVariant", back_populates="product", cascade="all, delete-orphan"
+    )
     inventory = relationship("Inventory", back_populates="product", uselist=False)
     reviews = relationship("Review", back_populates="product")
     cart_items = relationship("CartItem", back_populates="product")

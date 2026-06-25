@@ -16,10 +16,14 @@ class CartService:
         )
         return result.scalars().all()
 
-    async def add_to_cart(self, user_id: int, product_id: int, variant_id: int | None, quantity: int) -> CartItem:
+    async def add_to_cart(
+        self, user_id: int, product_id: int, variant_id: int | None, quantity: int
+    ) -> CartItem:
         product = await self.db.get(Product, product_id)
         if not product or not product.is_active:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+            )
 
         result = await self.db.execute(
             select(CartItem).where(
@@ -42,13 +46,17 @@ class CartService:
             self.db.add(item)
         return item
 
-    async def update_cart_item(self, user_id: int, item_id: int, quantity: int) -> CartItem:
+    async def update_cart_item(
+        self, user_id: int, item_id: int, quantity: int
+    ) -> CartItem:
         result = await self.db.execute(
             select(CartItem).where(CartItem.id == item_id, CartItem.user_id == user_id)
         )
         item = result.scalar_one_or_none()
         if not item:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart item not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Cart item not found"
+            )
         if quantity <= 0:
             await self.db.delete(item)
             return None
@@ -61,10 +69,14 @@ class CartService:
         )
         item = result.scalar_one_or_none()
         if not item:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart item not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Cart item not found"
+            )
         await self.db.delete(item)
 
     async def clear_cart(self, user_id: int) -> None:
-        result = await self.db.execute(select(CartItem).where(CartItem.user_id == user_id))
+        result = await self.db.execute(
+            select(CartItem).where(CartItem.user_id == user_id)
+        )
         for item in result.scalars().all():
             await self.db.delete(item)

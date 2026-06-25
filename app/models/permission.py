@@ -9,4 +9,6 @@ class Permission(Base):
     name = Column(String(100), unique=True, nullable=False)
     description = Column(String(255), nullable=True)
 
-    roles = relationship("Role", secondary="role_permissions", back_populates="permissions")
+    roles = relationship(
+        "Role", secondary="role_permissions", back_populates="permissions"
+    )

@@ -28,7 +28,13 @@ async def search_products(query: str, page: int = 1, page_size: int = 20) -> dic
         "query": {
             "multi_match": {
                 "query": query,
-                "fields": ["name^3", "description", "tags", "brand.name", "category.name"],
+                "fields": [
+                    "name^3",
+                    "description",
+                    "tags",
+                    "brand.name",
+                    "category.name",
+                ],
                 "fuzziness": "AUTO",
             }
         },

@@ -23,6 +23,7 @@ async def get_category(category_id: int, db: AsyncSession = Depends(get_db)):
     category = result.scalar_one_or_none()
     if not category:
         from app.core.exceptions import NotFoundException
+
         raise NotFoundException("Category not found")
     return category
 
@@ -49,6 +50,7 @@ async def update_category(
     category = result.scalar_one_or_none()
     if not category:
         from app.core.exceptions import NotFoundException
+
         raise NotFoundException("Category not found")
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(category, field, value)

@@ -2,7 +2,9 @@ from app.utils.logger import logger
 
 
 class NotificationService:
-    async def send_push(self, user_id: int, title: str, body: str, data: dict = None) -> None:
+    async def send_push(
+        self, user_id: int, title: str, body: str, data: dict = None
+    ) -> None:
         """Send push notification (integrate with FCM/APNs here)."""
         logger.info(f"Push notification to user {user_id}: {title} - {body}")
 
@@ -17,7 +19,9 @@ class NotificationService:
             body=f"Your order #{order_number} has been placed successfully.",
         )
 
-    async def notify_order_shipped(self, user_id: int, order_number: str, tracking: str) -> None:
+    async def notify_order_shipped(
+        self, user_id: int, order_number: str, tracking: str
+    ) -> None:
         await self.send_push(
             user_id=user_id,
             title="Order Shipped 🚚",
